@@ -1,28 +1,24 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Quiz from "./Quiz";
 
 function App() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const isMounted = useRef(true);
 
   useEffect(() => {
-    if (isMounted.current) {
-      getQuestions();
-      isMounted.current = false;
-    }
+    getQuestions();
+  }, []); //spustí se, jen když se stránka renderuje poprvé
 
-  }, []);
-
+  //arrow function
   const getQuestions = async () => {
     try {
-      const response = await fetch("https://the-trivia-api.com/v2/questions/");
+      const response = await fetch("https://the-trivia-api.com/v2/questions/"); //await 
       const questionsResponse = await response.json();
       console.log(questionsResponse);
-      setQuestions(questionsResponse);
+      setQuestions(questionsResponse); //vložení hodnot do proměnné questions
     } catch (error) {
       console.log(error);
-    } finally {
+    } finally { //když projde try a otázky jsou připravený, tak se začne renderovat return
       setLoading(false);
     }
   };
@@ -32,10 +28,10 @@ function App() {
   }
 
   return (
-  <div>
-    <div className="header">Vítejte kamarádi</div>
-    <Quiz questions={questions} />
-  </div>
+    <div>
+      <div className="header">Vítejte kamarádi</div>
+      <Quiz questions={questions} />
+    </div>
   )
 
 }

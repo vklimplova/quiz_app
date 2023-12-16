@@ -1,6 +1,7 @@
 //fce pro vytváření variables a updatování jejich stavu
 import { useState, useEffect } from "react";
 import { resultInitialState } from "./constants";
+import Choice from "./components/Choice";
 
 const Quiz = ({ questions }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -15,24 +16,21 @@ const Quiz = ({ questions }) => {
     const question = otazka.question;
     const correctAnswer = otazka.correctAnswer;
 
+    //... spread operator - z array si natáhnu hodnoty jednu po jedný
+
     useEffect(() => {
         const shuffledArray = shuffleArray([correctAnswer, ...otazka.incorrectAnswers]);
         setChoices(shuffledArray);
-      }, [currentQuestion, correctAnswer, otazka.incorrectAnswers]);
-    
-      const shuffleArray = (array) => {
-        const shuffledArray = [...array];
-        for (let i = shuffledArray.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }, [currentQuestion, correctAnswer, otazka.incorrectAnswers]);
+
+    const shuffleArray = (array) => {
+        const shakedArray = [...array];
+        for (let i = shakedArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shakedArray[i], shakedArray[j]] = [shakedArray[j], shakedArray[i]];
         }
-        return shuffledArray;
-      };
-      
-
-    console.log(choices);
-
-
+        return shakedArray;
+    };
 
     const onAnswerClick = (answer, index) => {
         setAnswerIdx(index);
@@ -74,7 +72,7 @@ const Quiz = ({ questions }) => {
 
     const onRefreshPage = () => {
         window.location.reload(false);
-      }
+    }
 
 
     return (
@@ -86,14 +84,8 @@ const Quiz = ({ questions }) => {
                 <ul>
                     {
                         choices.map((choice, index) => (
-                            <li
-                                onClick={() => onAnswerClick(choice, index)}
-                                key={choice}
-                                className={answerIdx === index ? 'selected-answer' : null}
-                            >
-                                {choice}
+                            <Choice key={index} choice={choice} index={index} answerIdx={answerIdx} onAnswerClick={onAnswerClick}></Choice>
 
-                            </li>
                         ))
                     }
                 </ul>
