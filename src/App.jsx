@@ -33,7 +33,7 @@ function App() {
 
   return (
   <div>
-    <div className="header">Vítejte</div>
+    <div className="header">Vítejte kamarádi</div>
     <Quiz questions={questions} />
   </div>
   )
