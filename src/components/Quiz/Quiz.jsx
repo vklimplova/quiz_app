@@ -1,7 +1,8 @@
 //fce pro vytváření variables a updatování jejich stavu
 import { useState, useEffect } from "react";
-import { resultInitialState } from "./constants";
-import Choice from "./components/Choice";
+import { resultInitialState } from "../../constants";
+import Timer from "../Timer/Timer";
+import "./Quiz.scss";
 
 const Quiz = ({ questions }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -10,6 +11,7 @@ const Quiz = ({ questions }) => {
     const [result, setResult] = useState(resultInitialState);
     const [showResult, setShowResult] = useState(false);
     const [choices, setChoices] = useState([]);
+    const [showTimer, setShowTimer] = useState(true);
 
 
     const otazka = questions[currentQuestion];
@@ -41,10 +43,11 @@ const Quiz = ({ questions }) => {
         }
     };
 
-    const onClickNext = () => {
+    const onClickNext = (finalAnswer) => {
         setAnswerIdx(null);
+        setShowTimer(false);
         setResult((prev) =>
-            answer
+            finalAnswer
                 ? {
                     ...prev,
                     score: prev.score + 1,
@@ -63,53 +66,66 @@ const Quiz = ({ questions }) => {
 
         }
 
+        setTimeout(() => {
+            setShowTimer(true);
+        });
+
     };
 
     const onTryAgain = () => {
         setResult(resultInitialState);
         setShowResult(false);
-    }
+    };
 
     const onRefreshPage = () => {
         window.location.reload(false);
-    }
+    };
 
+    const timeUp = () => {
+        setAnswer(false);
+        onClickNext(false);
+    };
 
+//duration={10} - můžu měnit dle toho, kolik času chci na odpověď, v sekundách 
     return (
         <div className="quiz-container">
             {!showResult ? (<>
+            {showTimer && <Timer duration={5} onTimeUp={timeUp}/>} 
                 <span className="active-question-no">{currentQuestion + 1}</span>
                 <span className="total-question">/{questions.length}</span>
                 <h2>{question.text}</h2>
                 <ul>
                     {
                         choices.map((choice, index) => (
-                            <Choice key={index} choice={choice} index={index} answerIdx={answerIdx} onAnswerClick={onAnswerClick}></Choice>
+                            <li
+                                onClick={() => onAnswerClick(choice, index)}
+                                key={choice}
+                                className={answerIdx === index ? 'selected-answer' : null}
+                            >
+                                {choice}
 
+                            </li>
                         ))
                     }
                 </ul>
                 <div className="footer">
-                    <button onClick={onClickNext} disabled={answerIdx === null}>
-                        {currentQuestion === questions.length - 1 ? "Konec kvízu" : "Další otázka"}
+                    <button onClick={() => onClickNext(answer)} disabled={answerIdx === null}>
+                        {currentQuestion === questions.length - 1 ? "Submit" : "Next question"}
                     </button>
                 </div>
             </>) : <div className="result">
-                <h3>Výsledek</h3>
+                <h3>Result</h3>
                 <p>
-                    Počet otázek: <span>{questions.length}</span>
+                    Total score: <span>{result.score}</span>
                 </p>
                 <p>
-                    Celkové skóre: <span>{result.score}</span>
+                    Correct answers: <span>{result.correctAnswers}</span>
                 </p>
                 <p>
-                    Počet správných odpovědí: <span>{result.correctAnswers}</span>
+                    Wrong answers: <span>{result.wrongAnswers}</span>
                 </p>
-                <p>
-                    Počet špatných odpovědí: <span>{result.wrongAnswers}</span>
-                </p>
-                <button onClick={onTryAgain}>Další pokus</button><br></br>
-                <button onClick={onRefreshPage}>Zkusit jiný kvíz</button>
+                <button onClick={onTryAgain}>Try again</button><br></br>
+                <button onClick={onRefreshPage}>New quiz</button>
             </div>}
 
         </div>
