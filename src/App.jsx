@@ -4,6 +4,12 @@ import Quiz from "./components/Quiz/Quiz";
 function App() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showQuiz, setShowQuiz] = useState(false);
+
+  const handleButtonClick = () => {
+    setShowQuiz(true);
+  };
+
 
   useEffect(() => {
     getQuestions();
@@ -39,10 +45,9 @@ function App() {
           <li>you get 1 point for correct answer</li>
           <li>at the end you can either try the same set of questions again or try different quiz</li>
         </ul>
-
+      <button onClick={handleButtonClick}>Start Quiz</button>
       </div>
-
-      <Quiz questions={questions} />
+      {showQuiz && <Quiz questions={questions} />}
     </div>
   )
 
