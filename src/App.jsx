@@ -39,13 +39,16 @@ function App() {
         <h1>Welcome to my Quiz App</h1>
         <h2>Here are some simple rules:</h2>
         <ul>
-          <li>there are 10 questions</li>
-          <li>after you press the Start button you have 10s to answer each question</li>
-          <li>you can't go back once you answer and click Next question</li>
-          <li>you get 1 point for correct answer</li>
-          <li>at the end you can either try the same set of questions again or try different quiz</li>
+          <li>There are 10 questions.</li>
+          <li>You have 10s to answer each question.</li>
+          <li>You can't go back once you click Next question.</li>
+          <li>You get 1 point for correct answer.</li>
+          <li>After you finish you can either try the same set of questions again or complete a different quiz.</li>
         </ul>
-      <button onClick={handleButtonClick}>Start Quiz</button>
+      {/* <button onClick={handleButtonClick}>Start Quiz</button> */}
+      {showQuiz || (
+          <button onClick={handleButtonClick}>Start Quiz</button>
+        )}
       </div>
       {showQuiz && <Quiz questions={questions} />}
     </div>
