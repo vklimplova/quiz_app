@@ -7,11 +7,11 @@ import "./Quiz.scss";
 const Quiz = ({ questions }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answerIdx, setAnswerIdx] = useState(null); //na začátku nemáme žádné otázky
-    const [answer, setAnswer] = useState(null);
-    const [result, setResult] = useState(resultInitialState);
-    const [showResult, setShowResult] = useState(false);
-    const [choices, setChoices] = useState([]);
-    const [showTimer, setShowTimer] = useState(true);
+    const [answer, setAnswer] = useState(null); //správnost odpovědi
+    const [result, setResult] = useState(resultInitialState); //výsledek kvízu
+    const [showResult, setShowResult] = useState(false); //jestli je stránka s výsledkem vidět
+    const [choices, setChoices] = useState([]); //odpovědi na otázku 
+    const [showTimer, setShowTimer] = useState(true); 
 
 
     const otazka = questions[currentQuestion];
@@ -19,7 +19,7 @@ const Quiz = ({ questions }) => {
     const correctAnswer = otazka.correctAnswer;
 
     //... spread operator - z array si natáhnu hodnoty jednu po jedný
-
+    //zamíchání odpovědí, protože přímo z API byla vždy první odpověď správná
     useEffect(() => {
         const shuffledArray = shuffleArray([correctAnswer, ...otazka.incorrectAnswers]);
         setChoices(shuffledArray);
@@ -34,6 +34,7 @@ const Quiz = ({ questions }) => {
         return shakedArray;
     };
 
+    //mění state podle toho jestli bylo odpovězeno správně nebo špatně 
     const onAnswerClick = (answer, index) => {
         setAnswerIdx(index);
         if (answer === correctAnswer) {
@@ -50,7 +51,7 @@ const Quiz = ({ questions }) => {
             finalAnswer
                 ? {
                     ...prev,
-                    score: prev.score + 1,
+                    score: prev.score + 1, //přidání skóre, pokud byla odpověď správně 
                     correctAnswers: prev.correctAnswers + 1,
                 } : {
                     ...prev,
@@ -81,6 +82,7 @@ const Quiz = ({ questions }) => {
         window.location.reload(false);
     };
 
+    //pokud vyprší čas timeru počítá se odpověď jako špatná a jde se na další otázku 
     const timeUp = () => {
         setAnswer(false);
         onClickNext(false);
@@ -90,7 +92,7 @@ const Quiz = ({ questions }) => {
     return (
         <div className="quiz-container">
             {!showResult ? (<>
-            {showTimer && <Timer duration={5} onTimeUp={timeUp}/>} 
+            {showTimer && <Timer duration={10} onTimeUp={timeUp}/>} 
                 <span className="active-question-no">{currentQuestion + 1}</span>
                 <span className="total-question">/{questions.length}</span>
                 <h2>{question.text}</h2>

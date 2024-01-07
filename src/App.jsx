@@ -6,6 +6,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showQuiz, setShowQuiz] = useState(false);
 
+// zobrazení kvízu poté, co se klikne na Start button
   const handleButtonClick = () => {
     setShowQuiz(true);
   };
@@ -29,10 +30,6 @@ function App() {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <div>
       <div className="header">
@@ -45,18 +42,15 @@ function App() {
           <li>You get 1 point for correct answer.</li>
           <li>After you finish you can either try the same set of questions again or complete a different quiz.</li>
         </ul>
-      {/* <button onClick={handleButtonClick}>Start Quiz</button> */}
+{/*zobrazuje se buď Start button nebo kvíz - zálěží na state kvízu*/}
       {showQuiz || (
           <button onClick={handleButtonClick}>Start Quiz</button>
-        )}
+        )} 
       </div>
       {showQuiz && <Quiz questions={questions} />}
     </div>
   )
 
 }
-
-
-
 
 export default App
